@@ -1,0 +1,108 @@
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.11.2/css/all.min.css">
+<script>
+
+    $(document).ready(function() {
+  
+     var docHeight = $(window).height();
+     var footerHeight = $('#footer').height();
+     var footerTop = $('#footer').position().top + footerHeight;
+  
+     if (footerTop < docHeight) {
+      $('#footer').css('margin-top', 10+ (docHeight - footerTop) + 'px');
+     }
+    });
+   </script>
+<app-nav [loggedUserName]="loggedUserName" ></app-nav>
+
+<div class='container-login' id='searchcontainer'>
+
+    <h1> Search for Data</h1> 
+    <form [formGroup]="searchForm" id="searchFormStyle" class="form"  (submit)="submitSearch($event)">
+
+        <div class='form-group' style="padding: 1%">
+            <div>
+                <label for="date" style="margin-bottom: 5%;">Search for Date</label>
+                <div class="input-group">    
+                    <div class="input-group-prepend">
+                        <span class="input-group-text">
+                        <i  ngbTooltip='Choose Date' class="fa fa-calendar" aria-hidden="true"></i>
+                        </span>
+                    </div>
+                    <input   formControlName='searchDate' class="form-control" type="date" id="searchDate" name="searchDate" placeholder="Enter Search Date" ><br/>
+                </div>
+                
+            </div>
+        </div>
+
+        <div class="form-group" style="padding:1%">
+            <div>
+                <label for="date" style="margin-bottom: 5%;">Input Time</label>
+                <div class="input-group">
+                    <div class="input-group-prepend">
+                        <span class="input-group-text">
+                            <i class="fas fa-clock" tooltip=""></i>
+                        </span>
+                    </div>
+                    <input  formControlName='time' type="time"  class="form-control"  id="time" name="time" placeholder="Time" >
+                    
+                </div>
+                
+            </div>
+        </div>
+
+        <div class="form-group" style="padding:1%">
+            <div>
+            <label for="airport" style="margin-bottom: 2.5%;">Nearest Airport</label>
+            <div class="input-group">
+                <div class="input-group-prepend">
+                    <span class="input-group-text">
+                        <i  ngbTooltip='Nearest Airport' class="fas fa-plane" aria-hidden="true"></i>
+                    </span>
+                </div>
+                <select class="form-group form-control" [value]="selectedAirport" (change)="updateSelection($event)">>
+                    
+                    <option *ngFor="let airport of airports"  [value]="airport.siteId">
+                        {{airport.siteName}}
+                    </option>
+                </select> 
+                
+            </div>
+            
+        </div>
+        </div>
+
+        <div class="form-group" style="padding:1%;transform: translate(50%,25%);">
+            <input class="btn btn-secondary" style="width:100%;" id="weatherSubmit" type='submit' value='Get Weather'>
+        </div>
+        
+       
+           
+                                                                            
+    </form>
+</div>
+
+
+<div class="imageContainer" *ngIf="searchBtnClicked" >
+<h3 >Data Visualizer</h3>  
+<img style="width:800px;height:800px;border:3px solid black;" [src]="imageToShow"    > <br/>
+<!-- <img style="width:800px;height:800px;" src="https://i2-prod.mirror.co.uk/incoming/article13438434.ece/ALTERNATES/s1200/0_Liverpool-v-Paris-Saint-Germain-UEFA-Champions-League-Group-C.jpg"> -->
+
+</div>
+<div *ngIf="!searchBtnClicked">
+<h2 style="text-align:center;"> Recent Searches for the User</h2>
+<table class="table table-dark" style="width:80%;margin-left: 10%;" >
+    <tr>
+        <th>Search Date</th>
+        <th>Location Chosen</th>
+        <th>Time Slot</th>
+        
+    </tr>
+    <tr *ngFor="let ush of searches;index as i">
+        <td>{{ush.dateSearched |date:'dd/MM/yyyy'}}</td>
+        <td>{{airMap.get(ush.airport)}}</td>
+        <td>{{ush.hour}}</td>
+        
+    </tr>
+</table> 
+</div>
+

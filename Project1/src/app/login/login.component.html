@@ -1,0 +1,54 @@
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.11.2/css/all.min.css">
+<div class='container-login' id='logincontainer'>
+    <h1>Login to Weather App</h1>
+    <form [formGroup]="loginForm" (submit)="submit($event)">
+        <div class='form-group'>
+            <label for="email">Email address</label>
+            <div class="input-group">    
+                <div class="input-group-prepend">
+                    <span class="input-group-text">
+                    <i  ngbTooltip='Email' class="fa fa-envelope" aria-hidden="true"></i>
+                    </span>
+                </div>
+                <input formControlName='email' class="form-control" type="text" id="email" name="email" placeholder="email"   > 
+            </div>
+         
+            <div *ngIf="loginForm.get('email')?.invalid && (loginForm.get('email')?.dirty || loginForm.get('email')?.touched)"class="alert alert-danger">
+                
+                <div *ngIf="loginForm.get('email')?.errors?.['required']">Email is required.</div>
+                <div *ngIf="loginForm.get('email')?.errors?.['pattern']">Email must be follow pattern username@domain.ext</div>
+            </div>
+
+        </div>
+        
+        <br/>
+        
+        <div class="form-group">
+            <label for="password">Password</label>
+            <div class="input-group">
+                <input formControlName='password' class="form-control" [type]="fieldTextType ? 'text':'password'" id="password" name="password" placeholder="password" >
+                <div class="input-group-append">
+                    <span class="input-group-text">
+                    <button id='showpwd' type="button" class="input-group btn btn-sm" (click)="showPassword()">
+                        <i class="fa" [ngClass]="{'fa-eye-slash':!fieldTextType,'fa-eye': fieldTextType }" [ngbTooltip]="fieldTextType ? 'Hide Password' : 'Show Password'" ></i></button>
+                    </span>
+                </div>
+            </div>
+            <div *ngIf="loginForm.get('password')?.invalid && (loginForm.get('password')?.dirty || loginForm.get('password')?.touched)"class="alert alert-danger">
+                
+                <div *ngIf="loginForm.get('password')?.errors?.['required']">Password is required.</div>
+                <div *ngIf="loginForm.get('password')?.errors?.['minlength']">Password must be at least 3 characters</div>
+                <div *ngIf="loginForm.get('password')?.errors?.['maxlength']">Password must not exceed 16 characters</div>
+            </div>
+        </div>
+            <input class="btn btn-primary btn-block btn-lg" type='submit' value='Login'>
+            
+            <span *ngIf="isValid && loginBtnClicked" class = 'block' style="font-weight: bold;color:darkred;font-size:18px;margin-left:25%;margin-top:2%;">Invalid Email or Password</span> 
+            <span *ngIf="( (loginForm.get('email')?.untouched || loginForm.get('password')?.untouched) && loginBtnClicked)" class = 'block' style="font-weight: bold;color:darkred;font-size:18px;margin-left:20%;margin-top:2%;">Please enter the required fields</span> <br/>
+            <br/>
+            <span style='text-align: center;position: relative;left:46%;margin:100px 5px;'>OR</span>    <br/><br/>
+            <input type="button" class="btn btn-secondary btn-block btn-lg" type='submit'value='Register' (click)="router.navigate(['/register']);"><br/>
+            <span style='text-align: center;position: relative;left:46%;margin:100px 5px;'>OR</span>    <br/><br/>
+            <button type="button" class="btn btn-primary btn-block btn-lg" (click)="redirect()">Sign-in with Google</button>
+    </form>
+</div>  

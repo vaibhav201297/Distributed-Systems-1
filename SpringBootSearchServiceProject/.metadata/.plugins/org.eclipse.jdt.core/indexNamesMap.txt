@@ -1,0 +1,3 @@
+INDEX VERSION 1.131
+file:/home/vaibhav/Spring%2022/Applied%20Distributed/Puzzles/P1-History/Puzzles/SpringBootSearchServiceProject/.metadata/.plugins/org.eclipse.jdt.core/1865797976.index
+meta_index

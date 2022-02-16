@@ -1,0 +1,118 @@
+version: "3.9"
+networks:
+  weather-app-network:
+    name: weather-app-network
+    driver: bridge
+
+services:
+
+  # NODEJS CONTAINERS
+  p1-ui-service-angular:
+    # image: <docker_hub_image_name>
+    build: ./Puzzles-p1-ui/Project1
+    restart: always
+    container_name: ui_node
+    ports:
+      - '4200:4200'
+    networks:
+      - weather-app-network
+
+  p1-gateway-service:
+    # image: <docker_hub_image_name>
+    build: ./Puzzles-p1-gateway/p1-gateway-service
+    restart: always
+    container_name: gateway_node
+    ports:
+      - 7777:7777
+    environment:
+      NODE_ENV: ${NODE_ENV}
+    networks:
+      - weather-app-network
+
+  p1-auth-service:
+    # image: <docker_hub_image_name>
+    build: ./Puzzles-p1-auth/p1-auth-service
+    restart: always
+    container_name: auth_node
+    ports:
+      - 5000:5000
+    environment:
+      NODE_ENV: ${NODE_ENV}
+    networks:
+      - weather-app-network
+
+  p1-profile-service:
+    # image: <docker_hub_image_name>
+    build: ./Puzzles-p1-profile/p1-profile-service
+    restart: always
+    container_name: profile_node
+    ports:
+      - 4000:4000
+    depends_on:
+      - mongodb
+    environment:
+      NODE_ENV: ${NODE_ENV}
+    networks:
+      - weather-app-network
+
+  # JAVA CONTAINER
+  p1-history-service:
+    image: app:latest
+    build: ./Puzzles-p1-history/SpringBootSearchServiceProject
+    restart: always
+    container_name: history_node
+    ports:
+      - 10000:10000
+    depends_on:
+      - mysqldb
+    networks:
+      - weather-app-network
+  
+  # PYTHON CONTAINER
+  p1-radar-service:
+    # image: <docker_hub_image_name>
+    build: ./Puzzles-p1-radar/p1-radar-service
+    restart: always
+    ports:
+      - 8000:8000
+    hostname: p1-radar-service
+    container_name: radar_node
+    deploy:
+      resources:
+        limits:
+          cpus: '0.5'
+          memory: 4g
+    networks:
+      - weather-app-network
+  
+  # Utility DB Image
+  mongodb:
+    image: mongo:5.0
+    hostname: mongodb
+    container_name: mongodb
+    ports:
+      - '27017:27017'
+    volumes: 
+      - "./profile-mongodb:/data/db"
+    networks:
+      - weather-app-network
+
+  mysqldb:
+    image: mysql
+    build: ./Puzzles-p1-history/SpringBootSearchServiceProject/dbsetup
+    hostname: mysqldb
+    container_name: mysqldb
+    # command: --default-authentication-plugin=mysql_native_password
+    restart: always
+    ports:
+      - '3306:3306'
+    environment:
+      MYSQL_ROOT_USER: root
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: SpringDataBase
+      MYSQL_USER: sa
+      MYSQL_PASSWORD: password
+    volumes: 
+      - "./history-mysqldb:/var/lib/mysql"
+    networks:
+      - weather-app-network

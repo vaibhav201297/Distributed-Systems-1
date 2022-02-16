@@ -1,0 +1,44 @@
+pipeline {
+    agent any
+    
+    options {
+        // This is required if you want to clean before build
+        skipDefaultCheckout(true)
+    }
+    stages {
+        stage('Cleanup') {
+            steps {
+                // Clean before build
+                cleanWs()
+            }
+        }
+        stage('Checkout') {
+            steps {
+                echo "Checking out 'p1-profile' branch"
+                git branch: 'p1-profile',
+                url: 'https://github.com/airavata-courses/Puzzles.git',
+                credentialsId: 'MyGitHub'
+            }
+        }
+        stage('Build') {
+            steps {
+                /* Installing application dependencies */
+                echo "Building ${env.JOB_NAME}..."
+                dir('p1-profile-service') {
+                    sh "pwd"
+                    sh 'npm install'
+                }                
+            }
+        }
+        stage('Test') {
+            steps {
+                /* Testing the application */
+                echo 'Application Testing'
+                dir('p1-profile-service') {
+                    sh "pwd"
+                    sh 'npm test'
+                }
+            }
+        }
+    }
+}
