@@ -1,6 +1,6 @@
 # Project 1
 
-## Installation Instructions [here](https://github.com/airavata-courses/Puzzles/wiki/Installation-Instructions)
+## Installation Instructions [here](https://github.com/vaibhav201297/Distributed-Systems-1/wiki/Installation-Instructions)
 
 ## **Napkin Diagram**
 
